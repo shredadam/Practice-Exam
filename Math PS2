@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul 18 00:58:25 2019
+
+@author: shredadam
+"""
+
+#3. Write a function MCpaths(Nt,Np,mu,sigma,dt)
+# in R or Python to generate a set 
+# of simulated price paths for a stock following 
+# geometric Brownian motion. 
+# Use this function with expected annual return μ = 10%, 
+# standard deviation σ = 30%, and initial price S0 = $100. 
+# Let the number of time steps per path be Nt = 252
+# and let the number of paths be Np =10,000.
+# (Include your own code with your submission.)
+
+#Import Packeges 
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#set seed
+np.random.seed(3)
+
+#Assign Parameters Nt,Np,mu,sigma,dt,S0
+Nt = 252    # number of time steps
+Np = 10000  # number of paths 
+mu = 0.1    # expected return in simple terms 
+sigma = 0.3 # volatility
+dt = 1/252  # lenght of timestep
+S0 = 100    # Initial stock proce
+
+#Define Function MCpaths(Nt,Np,mu,sigma,dt) include S0
+def MCpaths(Nt,Np,mu,sigma,dt,S0):
+    #Create matrix of random variables ~N(0,1) (Nt * Np)
+    rm = np.random.randn(Nt,Np)
+    
+    #Change mu from simple to continous return
+    mu = np.log(1+mu)-((sigma**2)/2)
+    
+    #scale the random variable by sigma and mu
+    vm = mu * dt + sigma * np.sqrt(dt) * rm
+
+    #create empty matrix to record stock price values
+    stckprc = np.zeros((Nt,Np))
+
+    for i in range (Nt-1):
+        stckprc[i+1] = stckprc[i,]+vm[i,]
+
+    #Take the exp of each element of the matrix
+    e = np.exp(stckprc)
+    p = e * S0
+    return(p)
+    
+#Call MCpaths to generate a set of stock paths
+p = MCpaths(Nt, Np, mu, sigma, dt, S0)
+
+#(a) Plot a histogram of the terminal values of the paths. 
+# What are the mean and standard deviation of the distribution?
+print("Question A")
+plt.figure(0)
+plt.hist(p[-1,], 100)
+plt.title("a) histogram of stock price at time Nt")
+plt.show
+mean = np.mean(p[-1])
+std = np.std(p[-1])
+print("the mean of the distribution: ", mean)
+print("the std of the distribution: :", std)
+print()
+
+
+# (b) What is the average number of returns to the origin? 
+# That is, how many times, after the first step,
+# does St hit or cross the initial value S0?
+print("Question B")
+a = (np.sum(p[1:] == S0))/Np
+low = (p <= S0)
+cross = low[1:] ^ low[:-1] 
+k = cross.sum()/Np
+print("Stock price returns to 100:", a," times. It crosses 100 ", k," times.")
+print()
+
+#(c) Consider a one-year European call option on the stock with strike 
+# price K = $100. What is the empirical mean value, averaged over all 
+# simulated paths, of the terminal payoff CNt = max(SNt − K, 0)?
+print("Question C")
+CX = 100   #Call strike price
+stcx = np.array((p[-1])-CX) #diff between St and CX
+CP = np.mean(np.maximum((stcx), 0)) # mean of the maximum of stcx or 0
+print("The value of", CX, "strike Call is: ", CP)
+print()
+
+
+#(d) Now consider a one-year European put option,
+# instead of a call, with the same strike price,
+# K = $100. What is the corresponding value? Should you 
+# evaluate the put option using the same random price prices 
+# used to evaluate the call above,
+# or should a new set be drawn independently?
+print("Question D")
+PX = 100
+stpx = np.array(PX-(p[-1])) #diff between St and CX
+PP = np.mean(np.maximum((stpx), 0)) # mean of the maximum of stcx or 0
+print("The value of", PX, "strike Put is: ",PP)
