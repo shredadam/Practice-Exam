@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul 19 20:55:47 2019
+
+@author: shredadam
+"""
+
+#load extensions
+import numpy as np
+import pandas as pd
+import matplotlib as mt
+import matplotlib.pyplot as plt
+from sklearn import datasets, linear_model
+
+#import data
+data = pd.read_csv('/Users/shredadam/Downloads/PS2-data.csv', sep="\t") 
+
+# a) For the full set of observations, determine the following:
+# calculate mean x and y, std x and y and correlation of xy
+meanx = np.mean(data["x"])
+meany = np.mean(data["y"])
+stdx = np.std(data["x"])
+stdy = np.std(data["y"])
+corr = data["x"].corr(data["y"])   #gives correlation as single value
+
+print("For the whole dateset")
+print("mean of x values: " ,meanx)
+print("mean of y values: ",meany)
+print("std of x values: ",stdx)
+print("std of y values: ",stdy)
+print("correlation of x and y: ",corr)
+
+# b) Now do the same analysis for each security in the sample. 
+# For each SecID, determine
+
+# separate data into sub sets based on SecID
+data1 = data[data["SecID"] == 12300]
+data2 = data[data["SecID"] == 12835]
+data3 = data[data["SecID"] == 14277]
+data4 = data[data["SecID"] == 17978]
+data5 = data[data["SecID"] == 18056]
+
+#creating array of data frames
+dataframes = [data1,data2,data3,data4,data5]
+
+#calculationg mean, std and correlation for each subset
+for i in dataframes: 
+    meanx = np.mean(data["x"])
+    meany = np.mean(data["y"])
+    stdx = np.std(data["x"])
+    stdy = np.std(data["y"])
+    corr = i["x"].corr(i["y"]) 
+    sec = (i["SecID"].iloc[0])
+    
+    print()
+    print()
+    print("For security",sec,)
+    print("mean x:", meanx)
+    print("mean y:",meany)
+    print("std x", stdx)
+    print("std y", stdy)
+    print("correlation of x and y:",corr)
+    
+    """
+    mt.style.use('ggplot')
+    plt.scatter(i["x"],i["y"])
+    plt.show()
+    """
