@@ -1,0 +1,186 @@
+Packages
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+import pandas as pd
+
+How to save a file as pdf
+from matplotlib.backends.backend_pdf import PdfPages
+
+with PdfPages('hdhsjhdh.pdf') as export_pdf:
+    
+    plt.figure()
+    plt.plot(np.arange(0, 60 +1), X)
+    plt.xlabel('t')
+    plt.ylabel('x(t)') 
+
+    plt.title('Discrete Random Walk, T=60, sigma=0.1, x0=1')
+
+    export_pdf.savefig()
+    plt.show()
+
+    plt.close()
+
+
+Generate random number: np.random.binomial(n=1, p=0.5, size=T)
+A random binomial distribution drawn from [0,1] with T trials, p chance of success
+only contains integers in range [0,1] 
+
+#Generate a normally distributed random matrix
+z = np.random.normal(size=(10,10))
+
+#Generate an evenly spaced list of number over a specific interval 
+t = np.linspace(0,1,10).reshape(10,1)
+On interval [0, 1], 10 entries in the list, in the shape of a 10*1 matrix 
+
+#Return evenly spaced values within a given interval
+np.arange(0, 61)
+Size 61 (0~60)
+
+#Create an array:
+X = np.zeros(T)
+An array with size T
+
+#Cumulative sum
+X[1:] = np.cumsum(innovations)
+All index after index 0 are set to be cumulative sum
+
+#Read a file
+DF = pd.read_csv(‘CPIAUCSL.csv’)
+‘CPIAUCSL.csv’ is the full file name
+
+#Extract a column
+Column_cpi = df[‘CPIAUCSL’]
+df: data frame defined before    ‘CPIAUCSL’: column name 
+
+#Convert a column to an array
+cpi_array = np.array(column_cpi)
+
+#Divide a data in half
+n = int(len(cpi)/2)
+Sample1 = cpi_array[:n]
+Sample2 = cpi_array[n:]
+
+#Mean and standard deviation function
+np.mean( )
+np.std( )
+
+#Plotting
+#General
+plt.plot()
+plt.show()
+
+#Line plot
+	plt.plot(months, prices)
+	plt.show()
+	X-axis: months, y-axis: prices 
+
+#Scatter plot
+plt.scatter(x = months, y = prices, s = 0.1)
+plt.show()
+s=0.1: size of markers 
+
+#Histogram - count frequency 
+plt.hist(x = prices, bins = 100)
+plt.show()
+y axis automatically count frequency
+
+#Histogram - normalized frequency (frequency in percentage) 
+plt.hist(x = prices, bins = 100, normed = 1)
+plt.show()
+
+#Create a horizontal line
+plt.figure( )
+plt.axhline(mean1, c='r', label='Mean, Period 1')
+
+#Add x and y labels, title 
+plt.xlabel('Year')
+plt.ylabel('Inflation, decimal')
+plt.title(‘title’)
+
+#Add label 
+plt.hist(x = prices, bins = 100, normed = 1, alpha = 0.5, label = ‘prices’)
+plt.legend()
+plt.show()
+
+#Adjust transparency 
+plt.hist(x = prices, bins = 100, normed = 1, alpha = 0.5)
+plt.show()
+
+#Add color 
+plt.hist(x = prices, bins = 100, normed = 1, alpha = 0.5, color = ‘red’)
+plt.show()
+color = ‘red’: red 
+
+#Change line style
+plt.plot(months, prices, linestyle = ‘--’)
+‘-’ ‘--’ ‘-.’ ‘:’
+#Array functions and methods 
+#Build an array (take a list as input)
+my_array = np.array([1,2,3])
+
+#2D array: when processing a table 
+cpi_array = np.array([months, prices])
+print(cpi_array)
+
+#Indexing for 2D array
+	Cpi_array[0,2]  (row index 0, column index 2)
+	Cpi_array[: , 2] (all elements with column index 2)
+
+#Shape and size 
+print(my_array.shape)
+print(my_array.size)
+
+#Array functions
+Mean : np.mean(my_array)
+Standard deviation: np.std(my_array)
+Variance: np.var(my_array)
+Transpose: np.transpose(my_array)
+
+#Boolean array 
+Month_array = ([‘Jan’, ‘Fed’, ‘Mar’])
+Boolean_array = ([True, True, False])
+month_array(boolean_array) 
+(only prints what is True: [‘Jan’, ‘Fed’]
+
+#To subset array x using array y
+x[y]
+x[boolean_array]
+
+#Boolean array in conditional test 
+price_array = np.array([1,2,3,4,5])
+boolean_array = (prices_array < 2)
+print(boolean_array): [F,F,T,T,T]
+print(price_array[boolean_array]): [3,4,5]
+
+#Basics
+Mathematical operators 
+-  *  /  %(remainder)   **(exponent)   ==(equal)   !=(not equal)
+
+#Lists
+List indexing 
+List_name[0] --- first index
+List_name[-1] --- last index 
+
+#List slicing 
+List_name[0 (included) : 10 (not included)]
+List_name[3 : ] --- from 3 to end of the list 
+List_name[: 3] --- from beginning of the list to 2
+
+#Slicing with steps 
+Month[0: 6: 2] --- from 0 to 5, get 1 output every 2 months 
+
+#Slicing nested lists (list in list)
+Cpi = [[‘Jan’, ‘Fed’, ‘Mar’], [1,2,3]]
+print(cpi[1]) --- [1,2,3]
+print(cpi[1][0]) --- 1
+
+#List methods
+Sorting data in ascending order: list_name.sort()
+Add 1 item to the list: list_name.append(x)
+Add multiple items to the list: list_name.extend(x)
+Identify an index of an entry: list_name.index(‘Fed’)
+
+#List functions 
+Maximum and minimum: max(list_name), min(list_name)
+
