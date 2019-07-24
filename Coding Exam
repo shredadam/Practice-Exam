@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jul 23 16:45:52 2019
+
+@author: shredadam
+"""
+#
+# Part I: Simulating a random walk. Consider the following model:
+# xt = xt−1 + σεt. (1) In this model σ is a constant, and εt (for t = 1,2,...,T) are independent and identically
+# distributed, taking the value 1 and −1 with probability 0.5.
+# 1. Write a function that simulates a path of xt for T periods.
+# • The function should take the following parameter values as input: T, σ, x0.
+# • The function should produce the following output: the time series of simulated
+# values of xt.
+# 2. Use the function you have written above to do the following:
+# (a) Simulate a time series of x using the following parameter values: T = 60,σ = 0.1,x0 =1.
+# (b) Plot the time series, add proper labels and title, and save it as a PDF file under the name “MITID path.pdf”.
+
+#Import packeges
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt                      # for plotting
+from matplotlib.backends.backend_pdf import PdfPages # Mathplots to PDF 
+
+#define random walk 
+def randwalk(T,s,x_0):
+    x_series = [x_0]                              #Create a list with x0
+    for i in range(1,T):                          #we know x0 so we start at 1
+        e = np.random.choice([-1,1],p=[0.5,0.5])  #Create random variable 1 or -1 p =.5
+        x = x_series[i-1]+ s * e 
+        x_series.append(x)                        #Appending the list 
+    return x_series                               #Fuction returns the list after for loop
+
+a = randwalk(100,1,0) 
+t = range(len(a))                                 #time define, based on the lenght of the list
+plt.scatter(t,a)
+plt.xlabel("time")
+plt.ylabel("walk")
+plt.title("Random Walk")
+plt.show()
+plt.savefig('test.png')
+
+#Creating PDF
+with PdfPages('test.pdf') as export_pdf:
+    plt.scatter(t,a)
+    plt.title('bleh')
+    plt.xlabel('x bleh')
+    plt.ylabel('y bleh')
+    export_pdf.savefig()     # Saving to PDF in the working directory
+    plt.close()
+    
+  
+    
+################    
+#  Question 2  #
+################ 
+# Copy the data file CPIAUCSL.csv for Consumer Price Index from the common working
+# directory and perform the following tasks.
+# 1. The data are monthly consumer price indices for all urban consumers. They reflect how price levels have changed over time. First compute the monthly inflation, defined using the formula below:
+# πt = Pt −Pt−1, (2) Pt−1
+# where Pt is the price index in month t.
+# 2. Split the sample into two halves. Compute the mean and standard deviation of the
+# monthly inflation rates πt over each of the two subsamples.
+# 3. Plot the monthly inflation series. Add to the plot two horizontal lines to mark the average inflation rates in the two subsamples computed above. Label the axes properly, and save the plot as a PDF under the name “MITID inflation.pdf”.    
+       
+data = pd.read_csv('CPIAUCSL.csv') 
+data['DATE'] = pd.to_datetime(data['DATE'])          # Make python realize that those are date values.
+data = data.sort_values(by=['DATE'],ascending=False) # Sort by date descending
+inflation = []                                       # Create bank list beacsue inflation is an equation working from most current time backwards 
+for i in range(len(data)-1):
+    pi = (data['CPIAUCSL'].iloc[i]-data['CPIAUCSL'].iloc[i+1])/data['CPIAUCSL'].iloc[i+1]    # given equation 
+    inflation.append(pi)                                                                     # add to the list 
+
+inflation_2 = inflation[0:int(len(inflation)/2)]              # Drom 0 to the half way point make sure it is an int
+inflation_1 = inflation[int(len(inflation)/2):len(inflation)] # Half way point to the end
+inflation_1 = pd.Series(inflation_1)                          # Convert to series entries
+inflation_2 = pd.Series(inflation_2)                          # Convert to series entreis
+mean_1 = inflation_1.mean()
+mean_2 = inflation_2.mean()
+std_1 = inflation_1.std()
+std_2 = inflation_2.std()
+
+inflation = pd.Series(inflation)
+time_plot = data['DATE'][0:-1]                                   # Saving the time values 
+time_plot.index = range(len(time_plot))                          # Match indexes with pi list 
+new_df = pd.DataFrame({'date':time_plot,'inflation':inflation})  # Create a data frame
+new_df = new_df.sort_values(by='date',ascending=True)            # Flip order
+X = list(new_df['date'])                                     
+Y = list(new_df['inflation'])
+
+with PdfPages('test3.pdf') as export_pdf:
+    plt.scatter(X,Y)
+    plt.axhline(y=mean_1,c = 'b', label='mean 2')       # Making y equal the mean of first part
+    plt.axhline(y=mean_2,c = 'r', label = 'mean 1')     # Making x equal to the mean of second part 
+    plt.legend()
+    export_pdf.savefig()
+    plt.close()
+    
+
+
+##################
+    
+f = plt.figure()
+plt.plot(range(10))
+f.savefig('test4.png', dpi=f.dpi)
+
+#################
+
+import matplotlib.pyplot as plt                      # for plotting
+from matplotlib.backends.backend_pdf import PdfPages # Mathplots to PDF 
+
+with PdfPages('test.pdf') as export_pdf:
+    plt.scatter(t,a)
+    export_pdf.savefig()     # Saving to PDF in the working directory
+    plt.close()
